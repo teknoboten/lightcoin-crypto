@@ -1,29 +1,61 @@
-let balance = 500.00;
-
-class Withdrawal {
-
-  constructor(amount) {
-    this.amount = amount;
+class Account {
+  constructor(email) {
+    this.id = email;
+    // this.balance = 0;
+    this.transactions = [];
+  }
+  get balance(){
+     // Calculate the balance using the transaction objects.
+     let b = 0;
+     for (const t of this.transactions){
+      b += t.amount;
+     }
+     return b;
   }
 
-  commit() {
-    balance -= this.amount;
+  addTransaction(transaction){
+    this.transactions.push(transaction);
   }
-
 }
 
+class Transaction {
+  constructor(amount, account){
+    this.amount = amount;
+    this.account = account;
+  }
+  commit(){
+    // console.log(this.value);
+    // this.account.balance += this.value;
+    this.time = new Date();
+    // this.account.addTransaction(this);
+    this.account.addTransaction({time: this.time, amount: this.value});
+  }
+}
+
+class Withdrawal extends Transaction {
+  get value(){
+    return -this.amount;
+  }
+}
+
+class Deposit extends Transaction {
+  get value(){
+    return this.amount;
+  }
+}
+
+const stevie = new Account("stevie@rosebudd.ca");
+
+console.log(`stevie balance: ${stevie.balance}`);
+
+t3 = new Deposit(5000, stevie);
+t3.commit();
+
+console.log(stevie.balance);
+
+t4 = new Withdrawal(150, stevie);
+t4.commit();
 
 
+console.log(stevie.balance);
 
-// DRIVER CODE BELOW
-// We use the code below to "drive" the application logic above and make sure it's working as expected
-
-t1 = new Withdrawal(50.25);
-t1.commit();
-console.log('Transaction 1:', t1);
-
-t2 = new Withdrawal(9.99);
-t2.commit();
-console.log('Transaction 2:', t2);
-
-console.log('Balance:', balance);
